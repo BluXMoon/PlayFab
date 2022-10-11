@@ -1,42 +1,71 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 using PlayFab;
 using PlayFab.ClientModels;
 
 public class PlayfabManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        Login();
-    }
+    public TMP_InputField emailInput, passwordInput, usernameInput;
+    string username = "";
 
-    // Update is called once per frame
-    void Update()
+    public void RegisterButton()
     {
-        
-    }
-
-    void Login()
-    {
-        var request = new LoginWithCustomIDRequest
+        var request = new RegisterPlayFabUserRequest
         {
-            CustomId = SystemInfo.deviceUniqueIdentifier,
-            CreateAccount = true
+            Email = emailInput.text,
+            Password = passwordInput.text,
+            DisplayName = usernameInput.text,
+            RequireBothUsernameAndEmail = false
         };
-
-        PlayFabClientAPI.LoginWithCustomID(request, OnSuccess, OnError);
+        PlayFabClientAPI.RegisterPlayFabUser(request, OnRegisterSuccess, OnError);
     }
 
-    void OnSuccess(LoginResult result)
+    void OnRegisterSuccess(RegisterPlayFabUserResult result)
     {
-        print("Successfull login/create account");
+        print("Register successfull!");
     }
 
     void OnError(PlayFabError error)
     {
-        print("Error while login/creating account");
-        print(error.GenerateErrorReport());
+        print(error.ErrorMessage);
+    }
+
+    public void LoginButton()
+    {
+        var request = new LoginWithEmailAddressRequest
+        {
+            Email = emailInput.text,
+            Password = passwordInput.text,
+            InfoRequestParameters = new GetPlayerCombinedInfoRequestParams
+            {
+                GetPlayerProfile = true
+            }
+        };
+        PlayFabClientAPI.LoginWithEmailAddress(request, OnLoginSuccess, OnError);
+    }
+
+    void OnLoginSuccess(LoginResult result)
+    {
+        print(result.InfoResultPayload.PlayerProfile.DisplayName);
+        print("Logged in");
+        username = result.InfoResultPayload.PlayerProfile.DisplayName;
+    }
+
+    public void ResetPasswordButton()
+    {
+        var request = new SendAccountRecoveryEmailRequest
+        {
+            Email = emailInput.text,
+            TitleId = "7B8D9"
+        };
+        PlayFabClientAPI.SendAccountRecoveryEmail(request, OnPasswordReset, OnError);
+    }
+
+    void OnPasswordReset(SendAccountRecoveryEmailResult result)
+    {
+        print("Recovery mail sent!");
     }
 }
