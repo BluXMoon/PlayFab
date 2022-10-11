@@ -578,9 +578,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d3ebc04b8554074c877d42be837dcdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  emailInput: {fileID: 1603263937}
+  emailInput: {fileID: 725504345}
   passwordInput: {fileID: 442739178}
-  usernameInput: {fileID: 0}
+  usernameInput: {fileID: 1603263937}
 --- !u!4 &182782930
 Transform:
   m_ObjectHideFlags: 0
